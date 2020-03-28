@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "lista.h"
 
 typedef enum TokenType {
   TEXTO=1,
@@ -13,33 +14,34 @@ typedef union Value {
   char *t;
 } Value;
 
-typedef struct Lista {
+typedef struct tLista {
   TokenType tt;
-  Value v;
-  struct Lista *prox;
-} Lista;
+  Value value;
+  struct tLista *prox;
+} *Lista;
 
 void Imprimir(Lista l) {
-  if (l.tt == TEXTO) {
-    printf("%s", l.v.t);
-  } else if (l.tt == INTEIRO) {
-    printf("%d", l.v.i);
-  } else if (l.tt == REAL) {
-    printf("%ls", l.v.r);
+  if (l->tt == TEXTO) {
+    printf("%s\n", l->value.t);
+  } else if (l->tt == INTEIRO) {
+    printf("%d\n", l->value.i);
+  } else if (l->tt == REAL) {
+    printf("%f\n", l->value.r);
   } else {
-    printf("Erro %d \n", l.tt);
+    printf("Erro %d \n", l->tt);
   }
 }
 
-Lista CriarLista(Value v, TokenType tt) {
-  Lista l = malloc(sizeof(struct Lista));;
+Lista CriarLista(Value value, TokenType tt) {
+  Lista l = malloc(sizeof(struct tLista));
   
+  l->tt = tt;
   if (tt == TEXTO) {
-    l.v.t = v.t;
+    l->value.t = value.t;
   } else if (tt == INTEIRO) {
-    l.v.i = v.i;
+    l->value.i = value.i;
   } else if (tt == REAL) {
-    l.v.r = v.r;
+    l->value.r = value.r;
   }
 
   return l;
@@ -49,10 +51,11 @@ int main(void) {
   Value v;
   v.i = 10;
   Lista l = CriarLista(v, INTEIRO);
-  // v.r = 11.0;
-  // l.prox = &CriarLista(v, REAL);
+  v.r = 11.0;
+  l->prox = CriarLista(v, REAL);
 
   Imprimir(l);
-  // Imprimir(*l.prox);
+  Imprimir(l->prox);
 
+  return 0;
 }
